@@ -44,7 +44,9 @@ var BootstrapDialog = null;
 			var handlesArray = [];
 			for(var i=0; i<handles.length; i++){
 				var handle = $.trim(handles[i]);
-				handlesArray.push('.modal-' + handle);
+				if (handle != '') {
+					handlesArray.push('.modal-' + handle);
+				}
 			}
 			if (handlesArray.length > 0) {
 				this.getDialog().draggable({
