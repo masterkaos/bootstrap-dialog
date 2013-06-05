@@ -1,6 +1,5 @@
 /* ================================================
  * Make use of Twitter Bootstrap's modal more monkey-friendly
- * Written by nakupanda, javanoob@hotmail.com
  * Licensed under The MIT License.
  * ================================================ */
 var BootstrapDialog = null;
@@ -11,9 +10,10 @@ var BootstrapDialog = null;
 		this.defaultOptions = {
 			'title'				:	null,
 			'content'			:	null,
-			'draggableHandles'	:	'header',
+			'draggableHandles'	:	'',
 			'autoDestroy'		:	true,
 			'buttons'			:	[],
+			'ready'				:	null,
 			// Bootstrap's options
 			'backdrop'			:	'static'
 		};
@@ -46,9 +46,11 @@ var BootstrapDialog = null;
 				var handle = $.trim(handles[i]);
 				handlesArray.push('.modal-' + handle);
 			}
-			this.getDialog().draggable({
-				handle: handlesArray.join(',')
-			});
+			if (handlesArray.length > 0) {
+				this.getDialog().draggable({
+					handle: handlesArray.join(',')
+				});
+			}
 		},
 		initButtons: function(){
 			var $footer = this.getFooter();
@@ -77,6 +79,7 @@ var BootstrapDialog = null;
 			this.initDialog();
 			this.initDraggable();
 			this.initButtons();
+			this.ready();
 			this.getDialog().modal('show');
 			
 			return this;
@@ -198,6 +201,24 @@ var BootstrapDialog = null;
 		},
 		getButtons: function(){
 			return this.options.buttons;
+		},
+		setReady: function(readyCallback){
+			this.options.ready = readyCallback;
+			
+			return this;
+		},
+		getReady: function(){
+			return this.options.ready;
+		},
+		/**
+		 * Run this after the dialog is ready
+		 */
+		ready: function(){
+			if (typeof this.options.ready == 'function') {
+				this.options.ready(this);
+			}
+			
+			return this;
 		}
 	};
 	
