@@ -208,7 +208,7 @@ var BootstrapDialog = null;
 		new BootstrapDialog({
 			content:	message,
 			buttons:	[{
-				label	:	'',
+				label	:	'OK',
 				cssClass:	'btn-primary',
 				onclick	:	function(dialog){
 					if (typeof callback == 'function') {
