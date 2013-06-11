@@ -71,7 +71,7 @@ var BootstrapDialog = null;
 				}
 				$btn.click({btn: btn, $btn: $btn, dialog: this}, function(event){
 					if(event.data.btn.onclick){
-						event.data.btn.onclick(event.data.dialog);
+						event.data.btn.onclick.call(event.target, event.data.dialog);
 					}
 				});
 				$footer.append($btn);
