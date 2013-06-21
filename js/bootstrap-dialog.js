@@ -5,7 +5,7 @@
 var BootstrapDialog = null;
 !function($){
 	"use strict";
-	
+
 	BootstrapDialog = function(options){
 		this.defaultOptions = {
 			'title'				:	null,
@@ -14,6 +14,7 @@ var BootstrapDialog = null;
 			'autoDestroy'		:	true,
 			'buttons'			:	[],
 			'ready'				:	null,
+            'url'               :   null,
 			// Bootstrap's options
 			'backdrop'			:	'static'
 		};
@@ -21,7 +22,7 @@ var BootstrapDialog = null;
 		this.buttons = {};
 		this.init(options);
 	};
-	
+
 	BootstrapDialog.prototype = {
 		constructor: BootstrapDialog,
 		init: function(options){
@@ -83,7 +84,7 @@ var BootstrapDialog = null;
 			this.initButtons();
 			this.ready();
 			this.getDialog().modal('show');
-			
+
 			return this;
 		},
 		close: function(){
@@ -100,12 +101,12 @@ var BootstrapDialog = null;
 				backdrop	:	this.options.backdrop,
 				show		:	false
 			});
-			
+
 			return $dialog;
 		},
 		setDialog: function($dialog){
 			this.$dialog = $dialog;
-			
+
 			return this;
 		},
 		getDialog: function(){
@@ -118,12 +119,12 @@ var BootstrapDialog = null;
 			}else{
 				$header.append(this.createDynamicContent(this.getTitle()));
 			}
-			
+
 			return $header;
 		},
 		setHeader: function($header){
 			this.$header = $header;
-			
+
 			return this;
 		},
 		getHeader: function(){
@@ -131,15 +132,24 @@ var BootstrapDialog = null;
 		},
 		createBody: function(){
 			var $body = $('<div class="modal-body"></div>');
-			if (this.getContent() != null) {
+            if(this.getUrl() != null) {
+                var loading = $('<div class="dialog-loading"></div>').html(this.createDynamicContent(this.getContent())).appendTo($body);
+                $.ajax({
+                    url: this.getUrl(),
+                    success: function (data) {
+                        loading.remove();
+                        $body.append(data);
+                    }
+                });
+            }else if (this.getContent() != null) {
 				$body.append(this.createDynamicContent(this.getContent()));
 			}
-			
+
 			return $body;
 		},
 		setBody: function($body){
 			this.$body = $body;
-			
+
 			return this;
 		},
 		getBody: function(){
@@ -150,7 +160,7 @@ var BootstrapDialog = null;
 		},
 		setFooter: function($footer){
 			this.$footer = $footer;
-			
+
 			return this;
 		},
 		getFooter: function(){
@@ -158,7 +168,7 @@ var BootstrapDialog = null;
 		},
 		setButton: function(id, $btn){
 			this.buttons[id] = $btn;
-			
+
 			return this;
 		},
 		getButton: function(id){
@@ -169,20 +179,28 @@ var BootstrapDialog = null;
 			if (contentType != 'function') {
 				return rawContent;
 			}
-			
+
 			return rawContent(this);
 		},
 		setData: function(key, value){
 			this.dataHolder[key] = value;
-			
+
 			return this;
 		},
 		getData: function(key){
 			return this.dataHolder[key];
 		},
+        setUrl : function(url) {
+            this.options.url = url;
+
+            return this;
+        },
+        getUrl : function() {
+            return this.options.url;
+        },
 		setTitle: function(title){
 			this.options.title = title;
-			
+
 			return this;
 		},
 		getTitle: function(){
@@ -190,7 +208,7 @@ var BootstrapDialog = null;
 		},
 		setContent: function(content){
 			this.options.content = content;
-			
+
 			return this;
 		},
 		getContent: function(){
@@ -198,7 +216,7 @@ var BootstrapDialog = null;
 		},
 		setButtons: function(buttons){
 			this.options.buttons = buttons;
-			
+
 			return this;
 		},
 		getButtons: function(){
@@ -206,7 +224,7 @@ var BootstrapDialog = null;
 		},
 		setReady: function(readyCallback){
 			this.options.ready = readyCallback;
-			
+
 			return this;
 		},
 		getReady: function(){
@@ -219,11 +237,11 @@ var BootstrapDialog = null;
 			if (typeof this.options.ready == 'function') {
 				this.options.ready(this);
 			}
-			
+
 			return this;
 		}
 	};
-	
+
 	/* ================================================
 	 * For lazy people
 	 * ================================================ */
@@ -242,7 +260,7 @@ var BootstrapDialog = null;
 			}]
 		}).open();
 	};
-	
+
 	BootstrapDialog.confirm = function(message, callback){
 		new BootstrapDialog({
 			content:	message,
